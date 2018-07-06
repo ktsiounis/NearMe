@@ -7,8 +7,10 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_register">Don\'t you have an account? Create a new one!</string>
+    <string name="action_create_account">Create Account</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -17,4 +19,14 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="username_hint">Username</string>
+    <string name="firstname_hint">First name</string>
+    <string name="lastname_hint">Last name</string>
+    <string name="sign_up_button_description">Click to create the account</string>
+    <string name="username_description">Insert a username</string>
+    <string name="firstname_description">Insert your first name</string>
+    <string name="lastname_description">Insert your last name</string>
+    <string name="email_description">Insert your personal email</string>
+    <string name="password_description">Type your personal password</string>
+    <string name="sign_in_button_description">Click to sign in</string>
 </resources>

@@ -71,13 +71,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             "foo@example.com:hello", "bar@example.com:world"
     };
 
-    private UserLoginTask mAuthTask = null;
-
     @BindView(R.id.email) public AutoCompleteTextView mEmailView;
     @BindView(R.id.password) public EditText mPasswordView;
     @BindView(R.id.login_progress) public View mProgressView;
     @BindView(R.id.login_form) public View mLoginFormView;
     @BindView(R.id.email_sign_in_button) public Button mEmailSignInButton;
+    @BindView(R.id.email_register_button) public TextView mRegisterTextView;
 
     private FirebaseAuth mAuth;
 
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin(true);
+                    attemptLogin();
                     return true;
                 }
                 return false;
@@ -107,7 +106,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin(true);
+                attemptLogin();
+            }
+        });
+
+        mRegisterTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createAccount();
             }
         });
 
@@ -162,10 +168,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin(Boolean isRegistered) {
-        if (mAuthTask != null) {
-            return;
-        }
+    private void attemptLogin() {
 
         // Reset errors.
         mEmailView.setError(null);
@@ -204,9 +207,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, isRegistered);
-            mAuthTask.execute((Void) null);
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener( this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+
+                            showProgress(false);
+
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this, "Failed to Authenticate", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Intent main = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(main);
+                            }
+                        }
+                    });
         }
+    }
+
+    void createAccount(){
+        Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
+        startActivityForResult(i, 1);
     }
 
     private boolean isEmailValid(String email) {
@@ -296,7 +318,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -307,126 +328,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        private final String mEmail;
-        private final String mPassword;
-        private final Boolean isRegistered;
+        showProgress(false);
 
-        UserLoginTask(String email, String password, Boolean isRegistered) {
-            mEmail = email;
-            mPassword = password;
-            isRegistered = isRegistered;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            if(!isRegistered){
-                mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                showProgress(false);
-
-                                if(!task.isSuccessful()){
-                                    Toast.makeText(LoginActivity.this,"Could not Register",Toast.LENGTH_LONG).show();
-                                }
-                                else{
-                                    //show username dialog
-                                    UsernameDialogFragment dialog = new UsernameDialogFragment();
-                                    dialog.show(getSupportFragmentManager(),null);
-                                }
-                            }
-                        });
-            }
-            else{
-                mAuth.signInWithEmailAndPassword(mEmail, mPassword)
-                        .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                showProgress(false);
-
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "Failed to Authenticate",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                else{
-                                    Intent main = new Intent(getBaseContext(), MainActivity.class);
-                                    startActivity(main);
-                                }
-                            }
-                        });
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+        if(requestCode == 1 && resultCode == 1) {
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
         }
     }
-
-    public static class UsernameDialogFragment extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // Get the layout inflater
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-
-            // Inflate and set the layout for the dialog
-            // Pass null as the parent view because its going in the dialog layout
-            builder.setView(inflater.inflate(R.layout.userprofile_dialog, null))
-                    // Add action buttons
-                    .setPositiveButton(R.string.action_register, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            // register the user ...
-                            EditText userNameField = (EditText)((AlertDialog)dialog).findViewById(R.id.username);
-                            EditText firstNameField = (EditText)((AlertDialog)dialog).findViewById(R.id.firstName);
-                            EditText lastNameField = (EditText)((AlertDialog)dialog).findViewById(R.id.lastName);
-
-                            String username = userNameField.getText().toString();
-                            String firstname = firstNameField.getText().toString();
-                            String lastname = lastNameField.getText().toString();
-                            String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                            User aUser = new User(firstname, username, lastname);
-
-                            FirebaseDatabase.getInstance().getReference("users").child(userID).child("profile").setValue(aUser);
-
-                            Intent chat = new Intent(getActivity().getBaseContext(), MainActivity.class);
-                            startActivity(chat);
-                        }
-                    });
-            return builder.create();
-        }
-
-    }
-
-
 }
 
