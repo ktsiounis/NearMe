@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">NearMe</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_favorites">Favorites</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -29,4 +28,6 @@
     <string name="email_description">Insert your personal email</string>
     <string name="password_description">Type your personal password</string>
     <string name="sign_in_button_description">Click to sign in</string>
+
+    <string name="logout">Logout</string>
 </resources>
