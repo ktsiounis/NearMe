@@ -1,0 +1,111 @@
+package com.ktsiounis.example.nearme.adapters;
+
+import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.StorageReference;
+import com.ktsiounis.example.nearme.R;
+import com.ktsiounis.example.nearme.model.Category;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by Konstantinos Tsiounis on 09-Jul-18.
+ */
+public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.CategoriesViewHolder> {
+
+    private ItemClickListener mListener;
+    private Context mContext;
+    private ArrayList<Category> mCategories;
+    private StorageReference mLoad;
+
+    public CategoriesAdapter(Context context, ItemClickListener listener, StorageReference load){
+        mContext = context;
+        mListener = listener;
+        mLoad = load;
+    }
+
+    @NonNull
+    @Override
+    public CategoriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View card = LayoutInflater.from(mContext).inflate(R.layout.category_card, parent,false);
+        return new CategoriesViewHolder(card);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final CategoriesViewHolder holder, int position) {
+        holder.categoryTitle.setText(mCategories.get(position).getTitle());
+        Log.d("CategoriesAdapter", "onBindViewHolder: "        + mCategories.get(position).getTitle());
+        mLoad.child(mCategories.get(position).getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("Bind View", "onSuccess: Success");
+                Picasso.with(mContext)
+                        .load(uri.toString())
+                        .into(holder.categoryThumbnail);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("CategoriesAdapter", "onFailure: ", e);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        if(mCategories == null) return 0;
+        else return mCategories.size();
+    }
+
+    public class CategoriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @BindView(R.id.category_thumbnail)
+        ImageView categoryThumbnail;
+        @BindView(R.id.category_title)
+        TextView categoryTitle;
+
+        public CategoriesViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mListener.onItemClickListener(position);
+        }
+    }
+
+    public interface ItemClickListener{
+        void onItemClickListener(int position);
+    }
+
+    public void swapList(ArrayList<Category> categories){
+        if( mCategories != null ){
+            mCategories.clear();
+            mCategories.addAll(categories);
+        }
+        else {
+            mCategories = categories;
+        }
+
+        notifyDataSetChanged();
+    }
+
+}
