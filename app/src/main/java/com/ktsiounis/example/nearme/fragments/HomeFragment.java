@@ -63,11 +63,11 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
 
         categoryArrayList = new ArrayList<>();
 
-        try {
-            fetchCategories();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            fetchCategories();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         categories.setLayoutManager(mLayoutManager);
@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         categoriesAdapter = new CategoriesAdapter(this.getActivity(), this, load);
         categories.setAdapter(categoriesAdapter);
 
+        new CategoriesAsyncTask().execute();
 
         // Inflate the layout for this fragment
         return view;
@@ -85,29 +86,49 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         RequestInterface requestInterface = APIClient.getClient().create(RequestInterface.class);
         Call<Category> call;
 
-        //for(int i=0; i<7; i++) {
+        for(int i=0; i<6; i++) {
 
-            call = requestInterface.getCategory(0);
+            call = requestInterface.getCategory(i);
 
-            call.enqueue(new Callback<Category>() {
-                @Override
-                public void onResponse(Call<Category> call, Response<Category> response) {
-                    Category category = response.body();
-                    categoryArrayList.add(category);
-                    categoriesAdapter.swapList(categoryArrayList);
-                }
+//            call.enqueue(new Callback<Category>() {
+//                @Override
+//                public void onResponse(Call<Category> call, Response<Category> response) {
+//                    Category category = response.body();
+//                    categoryArrayList.add(category);
+//                    categoriesAdapter.swapList(categoryArrayList);
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Category> call, Throwable t) {
+//                    Log.e("ErrorOnResponse", "onFailure: " + t);
+//                }
+//            });
 
-                @Override
-                public void onFailure(Call<Category> call, Throwable t) {
-                    Log.e("ErrorOnResponse", "onFailure: " + t);
-                }
-            });
-
-            //categoryArrayList.add(call.execute().body());
-        //}
+            categoryArrayList.add(call.execute().body());
+        }
 
     }
 
+    class CategoriesAsyncTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+
+            try {
+                fetchCategories();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            categoriesAdapter.swapList(categoryArrayList);
+            Log.d("HomeFragment", "onPostExecute: Executed " + categoryArrayList.get(4).getTitle());
+        }
+    }
 
 
     @Override

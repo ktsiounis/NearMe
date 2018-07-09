@@ -30,7 +30,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 
     private ItemClickListener mListener;
     private Context mContext;
-    private ArrayList<Category> mCategories;
+    private ArrayList<Category> mCategories = new ArrayList<>();
     private StorageReference mLoad;
 
     public CategoriesAdapter(Context context, ItemClickListener listener, StorageReference load){
@@ -104,6 +104,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         else {
             mCategories = categories;
         }
+
+        Log.d("ADAPTER", "swapList: Data changed " + mCategories.get(2).getTitle());
 
         notifyDataSetChanged();
     }
