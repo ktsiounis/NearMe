@@ -2,6 +2,7 @@ package com.ktsiounis.example.nearme.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,6 +21,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -30,6 +33,7 @@ import com.ktsiounis.example.nearme.fragments.HomeFragment;
 import com.ktsiounis.example.nearme.model.Category;
 import com.ktsiounis.example.nearme.rest.APIClient;
 import com.ktsiounis.example.nearme.rest.RequestInterface;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,7 +101,20 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i=0; i<6; i++) {
             call = requestInterface.getCategory(i);
-            categoryArrayList.add(call.execute().body());
+            final Category category = call.execute().body();
+            FirebaseStorage.getInstance().getReference().child(category.getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                @Override
+                public void onSuccess(Uri uri) {
+                    category.setThumbnail(uri.toString());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("CategoriesAdapter", "onFailure: ", e);
+                }
+            });
+
+            categoryArrayList.add(category);
         }
     }
 

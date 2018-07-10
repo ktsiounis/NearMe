@@ -59,8 +59,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
 
-        StorageReference load = FirebaseStorage.getInstance().getReference();
-        categoriesAdapter = new CategoriesAdapter(getActivity(), this, load);
+        categoriesAdapter = new CategoriesAdapter(getActivity(), this);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         categories.setLayoutManager(mLayoutManager);

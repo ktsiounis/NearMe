@@ -31,12 +31,10 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     private ItemClickListener mListener;
     private Context mContext;
     private ArrayList<Category> mCategories = new ArrayList<>();
-    private StorageReference mLoad;
 
-    public CategoriesAdapter(Context context, ItemClickListener listener, StorageReference load){
+    public CategoriesAdapter(Context context, ItemClickListener listener){
         mContext = context;
         mListener = listener;
-        mLoad = load;
     }
 
     @NonNull
@@ -49,21 +47,10 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     @Override
     public void onBindViewHolder(@NonNull final CategoriesViewHolder holder, int position) {
         holder.categoryTitle.setText(mCategories.get(position).getTitle());
-        Log.d("CategoriesAdapter", "onBindViewHolder: "        + mCategories.get(position).getTitle());
-        mLoad.child(mCategories.get(position).getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-            @Override
-            public void onSuccess(Uri uri) {
-                Picasso.with(mContext)
-                        .load(uri)
-                        .into(holder.categoryThumbnail);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("CategoriesAdapter", "onFailure: ", e);
-            }
-        });
 
+        Picasso.with(mContext)
+                .load(mCategories.get(position).getThumbnail())
+                .into(holder.categoryThumbnail);
 
     }
 
