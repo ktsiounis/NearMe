@@ -53,9 +53,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         mLoad.child(mCategories.get(position).getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
             @Override
             public void onSuccess(Uri uri) {
-                Log.d("Bind View", "onSuccess: Success");
                 Picasso.with(mContext)
-                        .load(uri.toString())
+                        .load(uri)
                         .into(holder.categoryThumbnail);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -64,6 +63,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
                 Log.e("CategoriesAdapter", "onFailure: ", e);
             }
         });
+
+
     }
 
     @Override

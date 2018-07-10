@@ -32,5 +32,5 @@
     <string name="category_image_description">The image to represent the category</string>
 
     <string name="logout">Logout</string>
-    <string name="search_hint">Search for a place</string>
+    <string name="search_hint">What are you looking for?</string>
 </resources>

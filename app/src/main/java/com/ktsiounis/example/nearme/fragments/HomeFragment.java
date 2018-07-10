@@ -3,6 +3,8 @@ package com.ktsiounis.example.nearme.fragments;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -29,8 +31,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClickListener {
@@ -60,80 +60,29 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         ButterKnife.bind(this, view);
 
         StorageReference load = FirebaseStorage.getInstance().getReference();
-
-        categoryArrayList = new ArrayList<>();
-
-//        try {
-//            fetchCategories();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        categoriesAdapter = new CategoriesAdapter(getActivity(), this, load);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         categories.setLayoutManager(mLayoutManager);
         categories.setItemAnimator(new DefaultItemAnimator());
         categories.setHasFixedSize(true);
-        categoriesAdapter = new CategoriesAdapter(this.getActivity(), this, load);
         categories.setAdapter(categoriesAdapter);
 
-        new CategoriesAsyncTask().execute();
+        if(getArguments() != null && getArguments().containsKey("data")){
+            categoryArrayList = getArguments().getParcelableArrayList("data");
+            categoriesAdapter.swapList(categoryArrayList);
+        } else {
+            categoryArrayList = new ArrayList<>();
+        }
 
         // Inflate the layout for this fragment
         return view;
     }
-
-    public void fetchCategories() throws IOException {
-        RequestInterface requestInterface = APIClient.getClient().create(RequestInterface.class);
-        Call<Category> call;
-
-        for(int i=0; i<6; i++) {
-
-            call = requestInterface.getCategory(i);
-
-//            call.enqueue(new Callback<Category>() {
-//                @Override
-//                public void onResponse(Call<Category> call, Response<Category> response) {
-//                    Category category = response.body();
-//                    categoryArrayList.add(category);
-//                    categoriesAdapter.swapList(categoryArrayList);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<Category> call, Throwable t) {
-//                    Log.e("ErrorOnResponse", "onFailure: " + t);
-//                }
-//            });
-
-            categoryArrayList.add(call.execute().body());
-        }
-
-    }
-
-    class CategoriesAsyncTask extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-
-            try {
-                fetchCategories();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            categoriesAdapter.swapList(categoryArrayList);
-            Log.d("HomeFragment", "onPostExecute: Executed " + categoryArrayList.get(4).getTitle());
-        }
-    }
-
 
     @Override
     public void onItemClickListener(int position) {
         Intent i = new Intent(getActivity(), DetailsActivity.class);
         startActivity(i);
     }
+
 }
