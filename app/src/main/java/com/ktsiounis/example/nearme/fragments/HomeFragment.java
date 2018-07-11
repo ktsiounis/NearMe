@@ -21,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.activities.DetailsActivity;
+import com.ktsiounis.example.nearme.activities.PlaceListActivity;
 import com.ktsiounis.example.nearme.adapters.CategoriesAdapter;
 import com.ktsiounis.example.nearme.model.Category;
 import com.ktsiounis.example.nearme.rest.APIClient;
@@ -80,7 +81,8 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
 
     @Override
     public void onItemClickListener(int position) {
-        Intent i = new Intent(getActivity(), DetailsActivity.class);
+        Intent i = new Intent(getActivity(), PlaceListActivity.class);
+        i.putParcelableArrayListExtra("places", categoryArrayList);
         startActivity(i);
     }
 

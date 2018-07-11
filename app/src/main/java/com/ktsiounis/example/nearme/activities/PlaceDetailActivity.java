@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
+import com.ktsiounis.example.nearme.model.Category;
 
 /**
  * An activity representing a single Place detail screen. This
@@ -20,6 +21,8 @@ import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
  * in a {@link PlaceListActivity}.
  */
 public class PlaceDetailActivity extends AppCompatActivity {
+
+    private Category category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,8 @@ public class PlaceDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        category = getIntent().getParcelableExtra("place");
+
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -56,8 +61,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(PlaceDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(PlaceDetailFragment.ARG_ITEM_ID));
+            arguments.putParcelable("place", category);
             PlaceDetailFragment fragment = new PlaceDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

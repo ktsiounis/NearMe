@@ -13,6 +13,10 @@ import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.activities.PlaceDetailActivity;
 import com.ktsiounis.example.nearme.activities.PlaceListActivity;
 import com.ktsiounis.example.nearme.activities.dummy.DummyContent;
+import com.ktsiounis.example.nearme.model.Category;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A fragment representing a single Place detail screen.
@@ -30,7 +34,10 @@ public class PlaceDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Category mItem;
+
+    private CollapsingToolbarLayout appBarLayout;
+    @BindView(R.id.place_detail) TextView placeDetail;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -43,16 +50,15 @@ public class PlaceDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
+        if (getArguments() != null && getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = getArguments().getParcelable(ARG_ITEM_ID);
 
-            Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            appBarLayout = getActivity().findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(mItem.getTitle());
             }
         }
     }
@@ -62,9 +68,10 @@ public class PlaceDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.place_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
+        ButterKnife.bind(this, rootView);
+
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.place_detail)).setText(mItem.details);
+            placeDetail.setText(mItem.getTitle());
         }
 
         return rootView;
