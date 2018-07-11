@@ -1,6 +1,5 @@
 package com.ktsiounis.example.nearme.fragments;
 
-import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.activities.PlaceDetailActivity;
 import com.ktsiounis.example.nearme.activities.PlaceListActivity;
-import com.ktsiounis.example.nearme.activities.dummy.DummyContent;
 import com.ktsiounis.example.nearme.model.Category;
 
 import butterknife.BindView;
