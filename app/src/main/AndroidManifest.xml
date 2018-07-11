@@ -37,7 +37,20 @@
             android:name=".activities.SignUpActivity"
             android:parentActivityName=".activities.LoginActivity"
             android:theme="@style/LoginActivityTheme" />
-        <activity android:name=".activities.DetailsActivity"></activity>
+        <activity android:name=".activities.DetailsActivity" />
+        <activity
+            android:name=".activities.PlaceListActivity"
+            android:label="@string/title_place_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activities.PlaceDetailActivity"
+            android:label="@string/title_place_detail"
+            android:parentActivityName=".activities.PlaceListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ktsiounis.example.nearme.activities.PlaceListActivity" />
+        </activity>
     </application>
 
 </manifest>

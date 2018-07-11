@@ -33,4 +33,6 @@
 
     <string name="logout">Logout</string>
     <string name="search_hint">What are you looking for?</string>
+    <string name="title_place_list">Places</string>
+    <string name="title_place_detail">Place Detail</string>
 </resources>
