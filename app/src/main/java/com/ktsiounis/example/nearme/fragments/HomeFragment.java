@@ -75,6 +75,10 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
             categoryArrayList = new ArrayList<>();
         }
 
+        for (int i=0; i < categoryArrayList.size(); i++){
+            Log.d("Fragment", "onBindViewHolder: " + categoryArrayList.get(i).getThumbnail());
+        }
+
         // Inflate the layout for this fragment
         return view;
     }

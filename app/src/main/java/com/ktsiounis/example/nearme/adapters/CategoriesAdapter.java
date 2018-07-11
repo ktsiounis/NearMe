@@ -1,6 +1,7 @@
 package com.ktsiounis.example.nearme.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -48,8 +49,32 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     public void onBindViewHolder(@NonNull final CategoriesViewHolder holder, int position) {
         holder.categoryTitle.setText(mCategories.get(position).getTitle());
 
+        int image = 0;
+
+        switch (mCategories.get(position).getThumbnail()) {
+            case "gasstation-thumbnail.jpg":
+                image = R.drawable.gasstation_thumbnail;
+                break;
+            case "coffeeshop-thumbnail.jpg":
+                image = R.drawable.coffeeshop_thumbnail;
+                break;
+            case "bars-thumbnail.jpg":
+                image = R.drawable.bars_thumbnail;
+                break;
+            case "restaurants-thumbnail.jpg":
+                image = R.drawable.restaurants_thumbnail;
+                break;
+            case "museum-thumbnail.jpg":
+                image = R.drawable.museum_thumbnail;
+                break;
+            case "hotel-thumbnail.jpg":
+                image = R.drawable.hotel_thumbnail;
+                break;
+        }
+
         Picasso.with(mContext)
-                .load(mCategories.get(position).getThumbnail())
+                .load(image)
+                .error(R.drawable.ic_launcher_background)
                 .into(holder.categoryThumbnail);
 
     }
@@ -93,7 +118,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
             mCategories = categories;
         }
 
-        Log.d("ADAPTER", "swapList: Data changed " + mCategories.get(2).getTitle());
+        //Log.d("ADAPTER", "swapList: Data changed " + mCategories.get(2).getTitle());
 
         notifyDataSetChanged();
     }

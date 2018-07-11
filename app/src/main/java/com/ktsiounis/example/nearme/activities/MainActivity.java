@@ -18,6 +18,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.navigation) BottomNavigationView navigation;
     private ActionBar toolbar;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     private FirebaseAuth mAuth;
     private SharedPreferences sp;
@@ -98,22 +102,11 @@ public class MainActivity extends AppCompatActivity {
     public void fetchCategories() throws IOException {
         RequestInterface requestInterface = APIClient.getClient().create(RequestInterface.class);
         Call<Category> call;
+        StorageReference reference = FirebaseStorage.getInstance().getReference();
 
         for(int i=0; i<6; i++) {
             call = requestInterface.getCategory(i);
             final Category category = call.execute().body();
-            FirebaseStorage.getInstance().getReference().child(category.getThumbnail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
-                @Override
-                public void onSuccess(Uri uri) {
-                    category.setThumbnail(uri.toString());
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e("CategoriesAdapter", "onFailure: ", e);
-                }
-            });
-
             categoryArrayList.add(category);
         }
     }
@@ -122,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Object doInBackground(Object[] objects) {
+
+            progressBar.setVisibility(View.VISIBLE);
 
             try {
                 fetchCategories();
@@ -134,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object o) {
+            progressBar.setVisibility(View.INVISIBLE);
             Fragment fragment = new HomeFragment();
             args = new Bundle();
             args.putParcelableArrayList("data", categoryArrayList);
