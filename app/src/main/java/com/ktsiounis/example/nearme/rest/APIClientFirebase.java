@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Konstantinos Tsiounis on 09-Jul-18.
  */
-public class APIClient {
+public class APIClientFirebase {
 
     public static final String BASE_URL = "https://nearme-1530782701082.firebaseio.com/";
     private static Retrofit retrofit = null;

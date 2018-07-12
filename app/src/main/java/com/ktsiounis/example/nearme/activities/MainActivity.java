@@ -1,41 +1,36 @@
 package com.ktsiounis.example.nearme.activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ktsiounis.example.nearme.R;
-import com.ktsiounis.example.nearme.adapters.CategoriesAdapter;
 import com.ktsiounis.example.nearme.fragments.FavoritesFragment;
 import com.ktsiounis.example.nearme.fragments.HomeFragment;
 import com.ktsiounis.example.nearme.model.Category;
-import com.ktsiounis.example.nearme.rest.APIClient;
-import com.ktsiounis.example.nearme.rest.RequestInterface;
-import com.squareup.picasso.Picasso;
+import com.ktsiounis.example.nearme.rest.APIClientFirebase;
+import com.ktsiounis.example.nearme.rest.RequestInterfaceFirebase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +39,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.READ_CONTACTS;
+
 public class MainActivity extends AppCompatActivity {
+
+    public static final int REQUEST_LOCATION = 0;
 
     @BindView(R.id.navigation) BottomNavigationView navigation;
     private ActionBar toolbar;
@@ -100,17 +100,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fetchCategories() throws IOException {
-        RequestInterface requestInterface = APIClient.getClient().create(RequestInterface.class);
+        RequestInterfaceFirebase requestInterfaceFirebase = APIClientFirebase.getClient().create(RequestInterfaceFirebase.class);
         Call<Category> call;
-        StorageReference reference = FirebaseStorage.getInstance().getReference();
 
         for(int i=0; i<6; i++) {
-            call = requestInterface.getCategory(i);
+            call = requestInterfaceFirebase.getCategory(i);
             final Category category = call.execute().body();
             categoryArrayList.add(category);
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class CategoriesAsyncTask extends AsyncTask {
 
         @Override
