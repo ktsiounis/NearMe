@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -46,6 +47,8 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
     RecyclerView categories;
     @BindView(R.id.search_input)
     EditText search_input;
+    @BindView(R.id.progressBar2)
+    ProgressBar progressBar;
 
     public ArrayList<Category> categoryArrayList;
     public CategoriesAdapter categoriesAdapter;
@@ -72,6 +75,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         ButterKnife.bind(this, view);
 
         categoriesAdapter = new CategoriesAdapter(getActivity(), this);
+        progressBar.setVisibility(View.INVISIBLE);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         categories.setLayoutManager(mLayoutManager);
@@ -104,29 +108,68 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                Log.d(TAG, "onSuccess: " + location.getLatitude() + "," + location.getLongitude());
-                RequestInterfacePlaces requestInterfacePlaces = APIClientPlaces.getClient().create(RequestInterfacePlaces.class);
-                Call<PlacesResults> call =
-                        requestInterfacePlaces.getNearByPlaces(location.getLatitude() + "," + location.getLongitude(),
-                                "1500",
-                                categoryArrayList.get(position).getTitle(),
-                                getResources().getString(R.string.API_KEY));
+                fetchPlaces(location, position);
+            }
+        });
+    }
 
-                call.enqueue(new Callback<PlacesResults>() {
-                    @Override
-                    public void onResponse(Call<PlacesResults> call, Response<PlacesResults> response) {
-                        ArrayList<Place> places = response.body().getPlaces();
-                        Log.d(TAG, "onResponse: " + places.get(1).getName());
-                        Intent i = new Intent(getActivity(), PlaceListActivity.class);
-                        i.putParcelableArrayListExtra("places", categoryArrayList);
-                        startActivity(i);
-                    }
+    public void fetchPlaces(Location location, final int position) {
 
-                    @Override
-                    public void onFailure(Call<PlacesResults> call, Throwable t) {
-                        Log.e(TAG, "onFailure: ", t);
-                    }
-                });
+        progressBar.setVisibility(View.VISIBLE);
+
+        String type = "";
+        String keyword = "";
+        RequestInterfacePlaces requestInterfacePlaces = APIClientPlaces.getClient().create(RequestInterfacePlaces.class);
+
+        switch (categoryArrayList.get(position).getTitle()) {
+            case "Hotels":
+                type = "lodging";
+                keyword = "hotel";
+                break;
+            case "Bars":
+                type = "bar";
+                keyword = "bar";
+                break;
+            case "Restaurants":
+                type = "restaurant";
+                keyword = "food";
+                break;
+            case "Coffee Shops":
+                type = "cafe";
+                keyword = "coffee";
+                break;
+            case "Gas Stations":
+                type = "gas_station";
+                keyword = "gas";
+                break;
+            case "Museums":
+                type = "museum";
+                keyword = "museum";
+                break;
+        }
+
+        Call<PlacesResults> call =
+                requestInterfacePlaces.getNearByPlaces(location.getLatitude() + "," + location.getLongitude(),
+                        "1500",
+                        type,
+                        keyword,
+                        getResources().getString(R.string.API_KEY));
+
+        call.enqueue(new Callback<PlacesResults>() {
+            @Override
+            public void onResponse(Call<PlacesResults> call, Response<PlacesResults> response) {
+                progressBar.setVisibility(View.INVISIBLE);
+                ArrayList<Place> places = response.body().getPlaces();
+                Intent i = new Intent(getActivity(), PlaceListActivity.class);
+                i.putParcelableArrayListExtra("places", places);
+                i.putExtra("category", categoryArrayList.get(position).getTitle());
+                startActivity(i);
+            }
+
+            @Override
+            public void onFailure(Call<PlacesResults> call, Throwable t) {
+                progressBar.setVisibility(View.INVISIBLE);
+                Log.e(TAG, "onFailure: ", t);
             }
         });
     }

@@ -74,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        setTitle(R.string.title_activity_login);
+
         if (!mayRequestLocation()) {
             return;
         }

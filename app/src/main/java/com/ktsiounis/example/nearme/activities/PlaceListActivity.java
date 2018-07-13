@@ -12,6 +12,7 @@ import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.adapters.PlaceListRecyclerViewAdapter;
 import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
 import com.ktsiounis.example.nearme.model.Category;
+import com.ktsiounis.example.nearme.model.Place;
 
 import java.util.ArrayList;
 
@@ -33,7 +34,8 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
      * device.
      */
     private boolean mTwoPane;
-    private ArrayList<Category> categories;
+    private ArrayList<Place> places;
+    private String category;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
 
@@ -44,12 +46,13 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
 
         ButterKnife.bind(this);
 
-        categories = getIntent().getParcelableArrayListExtra("places");
+        places = getIntent().getParcelableArrayListExtra("places");
+        category = getIntent().getStringExtra("category");
 
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(category);
 
         if (findViewById(R.id.place_detail_container) != null) {
             // The detail container view will be present only in the
@@ -65,7 +68,7 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new PlaceListRecyclerViewAdapter(this, categories));
+        recyclerView.setAdapter(new PlaceListRecyclerViewAdapter(this, places));
     }
 
 
@@ -73,7 +76,7 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     public void onItemClickListener(int position) {
         if (mTwoPane) {
             Bundle arguments = new Bundle();
-            arguments.putParcelable(PlaceDetailFragment.ARG_ITEM_ID, categories.get(position));
+            arguments.putParcelable(PlaceDetailFragment.ARG_ITEM_ID, places.get(position));
             PlaceDetailFragment fragment = new PlaceDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -81,7 +84,7 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
                     .commit();
         } else {
             Intent intent = new Intent(this, PlaceDetailActivity.class);
-            intent.putExtra(PlaceDetailFragment.ARG_ITEM_ID, categories.get(position));
+            intent.putExtra(PlaceDetailFragment.ARG_ITEM_ID, places.get(position));
 
             startActivity(intent);
         }

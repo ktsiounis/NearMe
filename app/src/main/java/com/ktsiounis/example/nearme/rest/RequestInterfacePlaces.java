@@ -12,6 +12,10 @@ import retrofit2.http.Query;
 public interface RequestInterfacePlaces {
 
     @GET("json")
-    Call<PlacesResults> getNearByPlaces(@Query("location") String location, @Query("radius") String radius, @Query("type") String type, @Query("key") String key);
+    Call<PlacesResults> getNearByPlaces(@Query("location") String location,
+                                        @Query("radius") String radius,
+                                        @Query("type") String type,
+                                        @Query("keyword") String keyword,
+                                        @Query("key") String key);
 
 }

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.model.Category;
+import com.ktsiounis.example.nearme.model.Place;
 
 import java.util.ArrayList;
 
@@ -21,12 +22,12 @@ public class PlaceListRecyclerViewAdapter
         extends RecyclerView.Adapter<PlaceListRecyclerViewAdapter.ViewHolder> {
 
     private ItemClickListener mOnClickListener;
-    private ArrayList<Category> mValues;
+    private ArrayList<Place> mValues;
 
     public PlaceListRecyclerViewAdapter(ItemClickListener itemClickListener,
-                                        ArrayList<Category> categories) {
+                                        ArrayList<Place> places) {
         mOnClickListener = itemClickListener;
-        mValues = categories;
+        mValues = places;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class PlaceListRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.place_name.setText("Its Name");
-        holder.place_category.setText(mValues.get(position).getTitle());
+        holder.place_name.setText(mValues.get(position).getName());
+        holder.place_category.setText(mValues.get(position).getId());
     }
 
     @Override
