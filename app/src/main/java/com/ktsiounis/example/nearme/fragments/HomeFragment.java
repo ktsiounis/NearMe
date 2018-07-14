@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -49,6 +51,8 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
     EditText search_input;
     @BindView(R.id.progressBar2)
     ProgressBar progressBar;
+    @BindView(R.id.searchRtn)
+    ImageButton searchBtn;
 
     public ArrayList<Category> categoryArrayList;
     public CategoriesAdapter categoriesAdapter;
@@ -61,10 +65,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
     }
 
     @Override
@@ -90,9 +91,13 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
             categoryArrayList = new ArrayList<>();
         }
 
-        for (int i = 0; i < categoryArrayList.size(); i++) {
-            Log.d("Fragment", "onBindViewHolder: " + categoryArrayList.get(i).getThumbnail());
-        }
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(categories, "rrrr", Snackbar.LENGTH_LONG).show();
+                //TODO: Implement text search
+            }
+        });
 
         // Inflate the layout for this fragment
         return view;

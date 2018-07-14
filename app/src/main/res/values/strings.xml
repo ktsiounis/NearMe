@@ -30,6 +30,8 @@
     <string name="sign_in_button_description">Click to sign in</string>
     <string name="category_title_description">The title of category</string>
     <string name="category_image_description">The image to represent the category</string>
+    <string name="search_button_description">Press it to search for places</string>
+    <string name="no_places">There are no places with this type near to you</string>
 
     <string name="logout">Logout</string>
     <string name="search_hint">What are you looking for?</string>

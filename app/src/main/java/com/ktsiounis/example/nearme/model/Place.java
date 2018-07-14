@@ -5,13 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by Konstantinos Tsiounis on 12-Jul-18.
  */
 public class Place implements Parcelable {
 
-    @SerializedName("geometry")
-    private Geometry geometry;
+    @SerializedName("placeGeometry")
+    private PlaceGeometry placeGeometry;
     @SerializedName("icon")
     private String icon;
     @SerializedName("id")
@@ -22,23 +24,38 @@ public class Place implements Parcelable {
     private String place_id;
     @SerializedName("rating")
     private String rating;
+    @SerializedName("vicinity")
+    private String vicinity;
+    @SerializedName("photos")
+    private ArrayList<PlacePhoto> placePhotos;
 
-    public Place(Geometry geometry, String icon, String id, String name, String place_id, String rating) {
-        this.geometry = geometry;
+    public Place(PlaceGeometry placeGeometry,
+                 String icon,
+                 String id,
+                 String name,
+                 String place_id,
+                 String rating,
+                 String vicinity,
+                 ArrayList<PlacePhoto> placePhotos) {
+        this.placeGeometry = placeGeometry;
         this.icon = icon;
         this.id = id;
         this.name = name;
         this.place_id = place_id;
         this.rating = rating;
+        this.vicinity = vicinity;
+        this.placePhotos = placePhotos;
     }
 
     protected Place(Parcel in) {
-        geometry = in.readParcelable(Geometry.class.getClassLoader());
+        placeGeometry = in.readParcelable(PlaceGeometry.class.getClassLoader());
         icon = in.readString();
         id = in.readString();
         name = in.readString();
         place_id = in.readString();
         rating = in.readString();
+        vicinity = in.readString();
+        placePhotos = in.readArrayList(PlacePhoto.class.getClassLoader());
     }
 
     public static final Creator<Place> CREATOR = new Creator<Place>() {
@@ -53,12 +70,12 @@ public class Place implements Parcelable {
         }
     };
 
-    public Geometry getGeometry() {
-        return geometry;
+    public PlaceGeometry getPlaceGeometry() {
+        return placeGeometry;
     }
 
-    public void setGeometry(Geometry geometry) {
-        this.geometry = geometry;
+    public void setPlaceGeometry(PlaceGeometry placeGeometry) {
+        this.placeGeometry = placeGeometry;
     }
 
     public String getIcon() {
@@ -106,13 +123,23 @@ public class Place implements Parcelable {
         return 0;
     }
 
+    public String getVicinity() {
+        return vicinity;
+    }
+
+    public void setVicinity(String vicinity) {
+        this.vicinity = vicinity;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(geometry, flags);
+        dest.writeParcelable(placeGeometry, flags);
         dest.writeString(icon);
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(place_id);
         dest.writeString(rating);
+        dest.writeString(vicinity);
+        dest.writeList(placePhotos);
     }
 }

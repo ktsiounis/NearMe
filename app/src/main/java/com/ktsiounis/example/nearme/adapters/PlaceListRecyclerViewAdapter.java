@@ -40,7 +40,7 @@ public class PlaceListRecyclerViewAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.place_name.setText(mValues.get(position).getName());
-        holder.place_category.setText(mValues.get(position).getId());
+        holder.place_category.setText(mValues.get(position).getVicinity());
     }
 
     @Override

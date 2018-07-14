@@ -27,6 +27,19 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <TextView
+            android:id="@+id/noPlacesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:alpha="0.6"
+            android:text="@string/no_places"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_anchor="@id/frameLayout"
+            app:layout_anchorGravity="center_vertical|center_horizontal|center" />
+
         <include layout="@layout/place_list" />
     </FrameLayout>
 

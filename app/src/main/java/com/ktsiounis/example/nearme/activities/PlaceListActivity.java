@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.adapters.PlaceListRecyclerViewAdapter;
@@ -38,6 +40,7 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     private String category;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.noPlacesTextView) TextView noPlacesTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,14 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
 
         places = getIntent().getParcelableArrayListExtra("places");
         category = getIntent().getStringExtra("category");
+
+        if(places.isEmpty()) {
+            noPlacesTV.setVisibility(View.VISIBLE);
+        } else {
+            noPlacesTV.setVisibility(View.INVISIBLE);
+        }
+
+        //Toast.makeText(this, places.get(0).getPlaceGeometry().getPlaceLocation().getLat(), Toast.LENGTH_LONG).show();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

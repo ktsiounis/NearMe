@@ -8,32 +8,32 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Konstantinos Tsiounis on 12-Jul-18.
  */
-public class Location implements Parcelable {
+public class PlaceLocation implements Parcelable {
 
     @SerializedName("lat")
     private String lat;
     @SerializedName("lng")
     private String lng;
 
-    public Location(String lat, String lng) {
+    public PlaceLocation(String lat, String lng) {
         this.lat = lat;
         this.lng = lng;
     }
 
-    protected Location(Parcel in) {
+    protected PlaceLocation(Parcel in) {
         lat = in.readString();
         lng = in.readString();
     }
 
-    public static final Creator<Location> CREATOR = new Creator<Location>() {
+    public static final Creator<PlaceLocation> CREATOR = new Creator<PlaceLocation>() {
         @Override
-        public Location createFromParcel(Parcel in) {
-            return new Location(in);
+        public PlaceLocation createFromParcel(Parcel in) {
+            return new PlaceLocation(in);
         }
 
         @Override
-        public Location[] newArray(int size) {
-            return new Location[size];
+        public PlaceLocation[] newArray(int size) {
+            return new PlaceLocation[size];
         }
     };
 
