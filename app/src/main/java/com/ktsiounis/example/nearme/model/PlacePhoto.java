@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class PlacePhoto implements Parcelable{
 
-    @SerializedName("photo_reference") String photo_reference;
-    @SerializedName("height") int height;
-    @SerializedName("width") int width;
+    @SerializedName("photo_reference") private String photo_reference;
+    @SerializedName("height") private int height;
+    @SerializedName("width") private int width;
 
     protected PlacePhoto(Parcel in) {
         photo_reference = in.readString();

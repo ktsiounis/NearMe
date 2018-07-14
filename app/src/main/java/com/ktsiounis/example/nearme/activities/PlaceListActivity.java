@@ -56,9 +56,10 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
             noPlacesTV.setVisibility(View.VISIBLE);
         } else {
             noPlacesTV.setVisibility(View.INVISIBLE);
+            //Toast.makeText(this, places.get(0).getPlacePhotos().size(), Toast.LENGTH_LONG).show();
         }
 
-        //Toast.makeText(this, places.get(0).getPlaceGeometry().getPlaceLocation().getLat(), Toast.LENGTH_LONG).show();
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

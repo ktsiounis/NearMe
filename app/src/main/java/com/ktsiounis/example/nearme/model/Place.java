@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class Place implements Parcelable {
 
-    @SerializedName("placeGeometry")
+    @SerializedName("geometry")
     private PlaceGeometry placeGeometry;
     @SerializedName("icon")
     private String icon;
@@ -55,7 +55,8 @@ public class Place implements Parcelable {
         place_id = in.readString();
         rating = in.readString();
         vicinity = in.readString();
-        placePhotos = in.readArrayList(PlacePhoto.class.getClassLoader());
+        //TODO: Find a way to put arraylist in parcelable
+        //in.readTypedList(placePhotos, PlacePhoto.CREATOR);
     }
 
     public static final Creator<Place> CREATOR = new Creator<Place>() {
@@ -131,6 +132,14 @@ public class Place implements Parcelable {
         this.vicinity = vicinity;
     }
 
+    public ArrayList<PlacePhoto> getPlacePhotos() {
+        return placePhotos;
+    }
+
+    public void setPlacePhotos(ArrayList<PlacePhoto> placePhotos) {
+        this.placePhotos = placePhotos;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(placeGeometry, flags);
@@ -140,6 +149,6 @@ public class Place implements Parcelable {
         dest.writeString(place_id);
         dest.writeString(rating);
         dest.writeString(vicinity);
-        dest.writeList(placePhotos);
+        //dest.writeTypedList(placePhotos);
     }
 }

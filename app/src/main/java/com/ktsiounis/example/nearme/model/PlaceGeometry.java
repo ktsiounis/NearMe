@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class PlaceGeometry implements Parcelable {
 
-    @SerializedName("placeLocation")
+    @SerializedName("location")
     private PlaceLocation placeLocation;
 
     protected PlaceGeometry(Parcel in) {
