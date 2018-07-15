@@ -24,7 +24,7 @@ public class Place implements Parcelable {
     private String place_id;
     @SerializedName("rating")
     private String rating;
-    @SerializedName("vicinity")
+    @SerializedName(value = "vicinity", alternate = {"formatted_address"})
     private String vicinity;
     @SerializedName("photos")
     private ArrayList<PlacePhoto> placePhotos;

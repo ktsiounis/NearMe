@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -22,7 +23,9 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.activities.PlaceListActivity;
 import com.ktsiounis.example.nearme.adapters.CategoriesAdapter;
@@ -31,6 +34,7 @@ import com.ktsiounis.example.nearme.model.Place;
 import com.ktsiounis.example.nearme.model.PlacesResults;
 import com.ktsiounis.example.nearme.rest.APIClientPlaces;
 import com.ktsiounis.example.nearme.rest.RequestInterfacePlaces;
+import com.ktsiounis.example.nearme.rest.RequestInterfaceTextSearch;
 
 import java.util.ArrayList;
 
@@ -94,8 +98,19 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(categories, "rrrr", Snackbar.LENGTH_LONG).show();
-                //TODO: Implement text search
+                //TODO: fix problem with location
+
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        fetchTextSearchResults(location);
+                    }
+                });
+
             }
         });
 
@@ -174,6 +189,32 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
             @Override
             public void onFailure(Call<PlacesResults> call, Throwable t) {
                 progressBar.setVisibility(View.INVISIBLE);
+                Log.e(TAG, "onFailure: ", t);
+            }
+        });
+    }
+
+    public void fetchTextSearchResults(Location location) {
+        RequestInterfaceTextSearch requestInterfaceTextSearch = APIClientPlaces.getClient().create(RequestInterfaceTextSearch.class);
+
+        Call<PlacesResults> call =
+                requestInterfaceTextSearch.getTextSearchResults(
+                        search_input.getText().toString().replace(" ", "+"),
+                        "42.3675294,-71.186966",
+                        "1500",
+                        getResources().getString(R.string.API_KEY));
+
+        call.enqueue(new Callback<PlacesResults>() {
+            @Override
+            public void onResponse(@NonNull Call<PlacesResults> call, @NonNull Response<PlacesResults> response) {
+                ArrayList<Place> places = response.body().getPlaces();
+//                Intent i = new Intent(getActivity(), PlaceListActivity.class);
+//                i.putParcelableArrayListExtra("places", places);
+//                startActivity(i);
+            }
+
+            @Override
+            public void onFailure(Call<PlacesResults> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
             }
         });
