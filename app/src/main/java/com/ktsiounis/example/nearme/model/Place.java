@@ -55,8 +55,8 @@ public class Place implements Parcelable {
         place_id = in.readString();
         rating = in.readString();
         vicinity = in.readString();
-        //TODO: Find a way to put arraylist in parcelable
-        //in.readTypedList(placePhotos, PlacePhoto.CREATOR);
+        placePhotos = new ArrayList<>();
+        in.readTypedList(placePhotos, PlacePhoto.CREATOR);
     }
 
     public static final Creator<Place> CREATOR = new Creator<Place>() {
@@ -149,6 +149,6 @@ public class Place implements Parcelable {
         dest.writeString(place_id);
         dest.writeString(rating);
         dest.writeString(vicinity);
-        //dest.writeTypedList(placePhotos);
+        dest.writeTypedList(placePhotos);
     }
 }

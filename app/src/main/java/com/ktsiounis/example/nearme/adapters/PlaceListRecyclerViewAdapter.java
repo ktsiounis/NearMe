@@ -1,14 +1,18 @@
 package com.ktsiounis.example.nearme.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.model.Category;
 import com.ktsiounis.example.nearme.model.Place;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -23,6 +27,7 @@ public class PlaceListRecyclerViewAdapter
 
     private ItemClickListener mOnClickListener;
     private ArrayList<Place> mValues;
+    private Context context;
 
     public PlaceListRecyclerViewAdapter(ItemClickListener itemClickListener,
                                         ArrayList<Place> places) {
@@ -34,13 +39,24 @@ public class PlaceListRecyclerViewAdapter
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.place_list_content, parent, false);
+
+        context = parent.getContext();
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.place_name.setText(mValues.get(position).getName());
-        holder.place_category.setText(mValues.get(position).getVicinity());
+        holder.place_vicinity.setText(mValues.get(position).getVicinity());
+        if(!mValues.get(position).getPlacePhotos().isEmpty()){
+            Log.d("PlaceListRVAdapter", "onBindViewHolder: " + "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
+                    mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY));
+            Picasso.with(context)
+                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
+                    mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY))
+                    .into(holder.place_photo);
+        }
     }
 
     @Override
@@ -54,7 +70,8 @@ public class PlaceListRecyclerViewAdapter
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.place_name) TextView place_name;
-        @BindView(R.id.place_category) TextView place_category;
+        @BindView(R.id.place_vicinity) TextView place_vicinity;
+        @BindView(R.id.place_photo) ImageView place_photo;
 
         ViewHolder(View view) {
             super(view);

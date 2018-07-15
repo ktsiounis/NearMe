@@ -56,10 +56,7 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
             noPlacesTV.setVisibility(View.VISIBLE);
         } else {
             noPlacesTV.setVisibility(View.INVISIBLE);
-            //Toast.makeText(this, places.get(0).getPlacePhotos().size(), Toast.LENGTH_LONG).show();
         }
-
-
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -82,7 +79,6 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new PlaceListRecyclerViewAdapter(this, places));
     }
-
 
     @Override
     public void onItemClickListener(int position) {
