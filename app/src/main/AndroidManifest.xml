@@ -38,7 +38,6 @@
             android:name=".activities.SignUpActivity"
             android:parentActivityName=".activities.LoginActivity"
             android:theme="@style/LoginActivityTheme" />
-        <activity android:name=".activities.DetailsActivity" />
         <activity
             android:name=".activities.PlaceListActivity"
             android:label="@string/title_place_list"

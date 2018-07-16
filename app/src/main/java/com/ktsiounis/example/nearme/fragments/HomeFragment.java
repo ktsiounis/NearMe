@@ -33,6 +33,7 @@ import com.ktsiounis.example.nearme.model.Category;
 import com.ktsiounis.example.nearme.model.Place;
 import com.ktsiounis.example.nearme.model.PlacesResults;
 import com.ktsiounis.example.nearme.rest.APIClientPlaces;
+import com.ktsiounis.example.nearme.rest.APIClientTextSearch;
 import com.ktsiounis.example.nearme.rest.RequestInterfacePlaces;
 import com.ktsiounis.example.nearme.rest.RequestInterfaceTextSearch;
 
@@ -82,6 +83,8 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         categoriesAdapter = new CategoriesAdapter(getActivity(), this);
         progressBar.setVisibility(View.INVISIBLE);
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         categories.setLayoutManager(mLayoutManager);
         categories.setItemAnimator(new DefaultItemAnimator());
@@ -98,7 +101,6 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: fix problem with location
 
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -120,7 +122,6 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
 
     @Override
     public void onItemClickListener(final int position) {
-
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -195,22 +196,29 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
     }
 
     public void fetchTextSearchResults(Location location) {
-        RequestInterfaceTextSearch requestInterfaceTextSearch = APIClientPlaces.getClient().create(RequestInterfaceTextSearch.class);
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        RequestInterfaceTextSearch requestInterfaceTextSearch = APIClientTextSearch.getClient().create(RequestInterfaceTextSearch.class);
 
         Call<PlacesResults> call =
                 requestInterfaceTextSearch.getTextSearchResults(
                         search_input.getText().toString().replace(" ", "+"),
-                        "42.3675294,-71.186966",
+                        location.getLatitude() + "," + location.getLongitude(),
                         "1500",
                         getResources().getString(R.string.API_KEY));
+
+        Log.d(TAG, "fetchTextSearchResults: " + call.request().toString());
 
         call.enqueue(new Callback<PlacesResults>() {
             @Override
             public void onResponse(@NonNull Call<PlacesResults> call, @NonNull Response<PlacesResults> response) {
+                progressBar.setVisibility(View.INVISIBLE);
                 ArrayList<Place> places = response.body().getPlaces();
-//                Intent i = new Intent(getActivity(), PlaceListActivity.class);
-//                i.putParcelableArrayListExtra("places", places);
-//                startActivity(i);
+                Intent i = new Intent(getActivity(), PlaceListActivity.class);
+                i.putParcelableArrayListExtra("places", places);
+                i.putExtra("category", "Text Search");
+                startActivity(i);
             }
 
             @Override
@@ -218,6 +226,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
                 Log.e(TAG, "onFailure: ", t);
             }
         });
+
     }
 
 }

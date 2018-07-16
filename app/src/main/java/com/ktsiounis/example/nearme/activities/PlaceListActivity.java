@@ -84,16 +84,17 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     public void onItemClickListener(int position) {
         if (mTwoPane) {
             Bundle arguments = new Bundle();
-            arguments.putParcelable(PlaceDetailFragment.ARG_ITEM_ID, places.get(position));
+            arguments.putParcelable("place", places.get(position));
             PlaceDetailFragment fragment = new PlaceDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.place_detail_container, fragment)
                     .commit();
         } else {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("place", places.get(position));
             Intent intent = new Intent(this, PlaceDetailActivity.class);
-            intent.putExtra(PlaceDetailFragment.ARG_ITEM_ID, places.get(position));
-
+            intent.putExtra("args", arguments);
             startActivity(intent);
         }
     }
