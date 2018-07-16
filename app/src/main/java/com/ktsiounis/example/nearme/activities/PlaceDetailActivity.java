@@ -16,6 +16,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
 import com.ktsiounis.example.nearme.model.Category;
@@ -50,7 +52,12 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String key = FirebaseDatabase.getInstance().getReference().push().getKey();
 
+                FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("favorites").child(key).setValue(place);
+                Snackbar.make(view, "The place saved in your favorites!", Snackbar.LENGTH_LONG)
+                        .setAction("OK", null).show();
+                fab.setImageResource(R.drawable.ic_favorite_black_24dp);
             }
         });
 
