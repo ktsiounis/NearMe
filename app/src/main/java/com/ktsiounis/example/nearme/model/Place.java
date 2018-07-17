@@ -29,6 +29,8 @@ public class Place implements Parcelable {
     @SerializedName("photos")
     private ArrayList<PlacePhoto> placePhotos;
 
+    public Place() {}
+
     public Place(PlaceGeometry placeGeometry,
                  String icon,
                  String id,

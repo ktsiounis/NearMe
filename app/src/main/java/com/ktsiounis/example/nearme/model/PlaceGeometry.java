@@ -38,9 +38,10 @@ public class PlaceGeometry implements Parcelable {
     }
 
     public PlaceGeometry(PlaceLocation placeLocation) {
-
         this.placeLocation = placeLocation;
     }
+
+    public PlaceGeometry() {}
 
     @Override
     public int describeContents() {

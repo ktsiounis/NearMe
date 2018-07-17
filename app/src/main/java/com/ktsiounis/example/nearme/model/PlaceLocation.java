@@ -20,6 +20,8 @@ public class PlaceLocation implements Parcelable {
         this.lng = lng;
     }
 
+    public PlaceLocation() {}
+
     protected PlaceLocation(Parcel in) {
         lat = in.readString();
         lng = in.readString();

@@ -54,11 +54,12 @@ public class PlacePhoto implements Parcelable{
     }
 
     public PlacePhoto(String photo_reference, int height, int width) {
-
         this.photo_reference = photo_reference;
         this.height = height;
         this.width = width;
     }
+
+    public PlacePhoto() {}
 
     @Override
     public int describeContents() {
