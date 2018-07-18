@@ -2,11 +2,13 @@ package com.ktsiounis.example.nearme.fragments;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ktsiounis.example.nearme.R;
+import com.ktsiounis.example.nearme.activities.PlaceDetailActivity;
+import com.ktsiounis.example.nearme.adapters.PlaceListRecyclerViewAdapter;
 import com.ktsiounis.example.nearme.model.Place;
 
 import java.util.ArrayList;
@@ -31,12 +35,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class FavoritesFragment extends Fragment {
+public class FavoritesFragment extends Fragment implements PlaceListRecyclerViewAdapter.ItemClickListener  {
 
-    @BindView(R.id.tvPlace)
-    public TextView tvPlace;
+    @BindView(R.id.place_list)
+    public RecyclerView recyclerView;
 
     private ArrayList<Place> places = new ArrayList<>();
+    private PlaceListRecyclerViewAdapter recyclerViewAdapter;
 
     public FavoritesFragment() {
         // Required empty public constructor
@@ -50,12 +55,22 @@ public class FavoritesFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        //TODO: Show favorite in recycler view
-
         new FavoritesTask().execute();
+
+        recyclerViewAdapter = new PlaceListRecyclerViewAdapter(this, places);
+        recyclerView.setAdapter(recyclerViewAdapter);
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onItemClickListener(int position) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable("place", places.get(position));
+        Intent intent = new Intent(getActivity(), PlaceDetailActivity.class);
+        intent.putExtra("args", arguments);
+        startActivity(intent);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -71,6 +86,7 @@ public class FavoritesFragment extends Fragment {
                         Place place = favoriteSnapshot.getValue(Place.class);
                         places.add(place);
                         Log.d("FavoritesTask", "onDataChange: " + place.getName());
+                        recyclerViewAdapter.notifyDataSetChanged();
                     }
                 }
 
