@@ -39,8 +39,10 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     private ArrayList<Place> places;
     private String category;
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.noPlacesTextView) TextView noPlacesTV;
+    @BindView(R.id.toolbar)
+    public Toolbar toolbar;
+    @BindView(R.id.noPlacesTextView)
+    public TextView noPlacesTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

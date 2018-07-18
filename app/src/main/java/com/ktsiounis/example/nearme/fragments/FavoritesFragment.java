@@ -1,6 +1,8 @@
 package com.ktsiounis.example.nearme.fragments;
 
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +34,7 @@ import butterknife.ButterKnife;
 public class FavoritesFragment extends Fragment {
 
     @BindView(R.id.tvPlace)
-    TextView tvPlace;
+    public TextView tvPlace;
 
     private ArrayList<Place> places = new ArrayList<>();
 
@@ -47,42 +52,43 @@ public class FavoritesFragment extends Fragment {
 
         //TODO: Show favorite in recycler view
 
-        ChildEventListener postListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Place place = dataSnapshot.getValue(Place.class);
-                places.add(place);
-                Log.d("FavoriteFragment", "onChildAdded: " + place.getName() + " " + places.size());
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        FirebaseDatabase.getInstance().getReference()
-                .child("users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("favorites")
-                .addChildEventListener(postListener);
+        new FavoritesTask().execute();
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class FavoritesTask extends AsyncTask<Integer, Integer, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot favoriteSnapshot: dataSnapshot.getChildren()){
+                        Place place = favoriteSnapshot.getValue(Place.class);
+                        places.add(place);
+                        Log.d("FavoritesTask", "onDataChange: " + place.getName());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            FirebaseDatabase.getInstance().getReference()
+                    .child("users")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child("favorites")
+                    .addValueEventListener(postListener);
+
+            return null;
+        }
+
     }
 
 }

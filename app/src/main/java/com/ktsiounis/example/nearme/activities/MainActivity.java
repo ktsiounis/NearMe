@@ -22,7 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ktsiounis.example.nearme.R;
@@ -47,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_LOCATION = 0;
 
     @BindView(R.id.navigation) BottomNavigationView navigation;
-    private ActionBar toolbar;
+    public ActionBar toolbar;
     @BindView(R.id.progressBar)
-    ProgressBar progressBar;
+    public ProgressBar progressBar;
+    @BindView(R.id.adView)
+    public AdView adView;
 
     private FirebaseAuth mAuth;
     private SharedPreferences sp;
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = getSupportActionBar();
         categoryArrayList = new ArrayList<>();
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("logged", MODE_PRIVATE);
 
@@ -97,6 +103,13 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar.setTitle(R.string.title_home);
         new CategoriesAsyncTask().execute();
+
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // An example device ID
+                .build();
+
+        adView.loadAd(request);
+
     }
 
     public void fetchCategories() throws IOException {

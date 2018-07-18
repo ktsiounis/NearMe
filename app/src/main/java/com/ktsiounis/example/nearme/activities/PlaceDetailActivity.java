@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 public class PlaceDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     @BindView(R.id.fab) public FloatingActionButton fab;
-    @BindView(R.id.details_toolbar) Toolbar toolbar;
+    @BindView(R.id.details_toolbar) public Toolbar toolbar;
 
     private Place place;
     private GoogleMap mMap;

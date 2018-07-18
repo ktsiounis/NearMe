@@ -1,9 +1,11 @@
 package com.ktsiounis.example.nearme.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -51,13 +53,13 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
     public static final String TAG = "HomeFragment";
 
     @BindView(R.id.categories_recyclerview)
-    RecyclerView categories;
+    public RecyclerView categories;
     @BindView(R.id.search_input)
-    EditText search_input;
+    public EditText search_input;
     @BindView(R.id.progressBar2)
-    ProgressBar progressBar;
+    public ProgressBar progressBar;
     @BindView(R.id.searchRtn)
-    ImageButton searchBtn;
+    public ImageButton searchBtn;
 
     public ArrayList<Category> categoryArrayList;
     public CategoriesAdapter categoriesAdapter;
@@ -101,18 +103,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        fetchTextSearchResults(location);
-                    }
-                });
-
+                new SearchPlaceTask().execute();
             }
         });
 
@@ -122,16 +113,7 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
 
     @Override
     public void onItemClickListener(final int position) {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                fetchPlaces(location, position);
-            }
-        });
+        new SearchPlaceTask().execute(position);
     }
 
     public void fetchPlaces(Location location, final int position) {
@@ -227,6 +209,31 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
             }
         });
 
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class SearchPlaceTask extends AsyncTask<Integer, Integer, String> {
+
+        @Override
+        protected String doInBackground(final Integer... objects) {
+
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return "error";
+            }
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(objects.length == 0){
+                        fetchTextSearchResults(location);
+                    } else {
+                        fetchPlaces(location, objects[0]);
+                    }
+                }
+            });
+
+            return "ok";
+        }
     }
 
 }
