@@ -43,6 +43,8 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     public Toolbar toolbar;
     @BindView(R.id.noPlacesTextView)
     public TextView noPlacesTV;
+    @BindView(R.id.place_list)
+    public RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +75,8 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.place_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView(recyclerView);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
