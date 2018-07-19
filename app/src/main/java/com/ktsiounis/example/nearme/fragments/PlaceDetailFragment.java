@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,6 +20,7 @@ import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.activities.PlaceDetailActivity;
 import com.ktsiounis.example.nearme.activities.PlaceListActivity;
 import com.ktsiounis.example.nearme.model.Place;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +37,12 @@ public class PlaceDetailFragment extends Fragment implements OnMapReadyCallback 
     private GoogleMap mMap;
 
     @BindView(R.id.fragment_fab) public FloatingActionButton fab;
+    @BindView(R.id.ratingBar) public RatingBar ratingBar;
+    @BindView(R.id.placeIcon) public ImageView placeIcon;
+    @BindView(R.id.placePhoto) public ImageView placePhoto;
+    @BindView(R.id.placeAddress) public TextView placeAddress;
+    @BindView(R.id.placeName) public TextView placeName;
+    @BindView(R.id.ratingNum) public TextView ratingNum;
 
     public PlaceDetailFragment() {
     }
@@ -48,10 +58,6 @@ public class PlaceDetailFragment extends Fragment implements OnMapReadyCallback 
             mItem = getArguments().getParcelable("place");
         }
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                .findFragmentById(R.id.fragment_map);
-        mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -61,7 +67,21 @@ public class PlaceDetailFragment extends Fragment implements OnMapReadyCallback 
 
         ButterKnife.bind(this, rootView);
 
-        //TODO: Implement the other elements for details
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.fragment_map);
+        mapFragment.getMapAsync(this);
+
+        ratingBar.setRating(Float.valueOf(mItem.getRating()));
+        ratingNum.setText(mItem.getRating());
+        placeAddress.setText(mItem.getVicinity());
+        placeName.setText(mItem.getName());
+        Picasso.with(getActivity())
+                .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
+                        mItem.getPlacePhotos().get(0).getPhoto_reference() + "&key=" + getResources().getString(R.string.API_KEY))
+                .into(placePhoto);
+        Picasso.with(getActivity())
+                .load(mItem.getIcon())
+                .into(placeIcon);
 
         return rootView;
     }

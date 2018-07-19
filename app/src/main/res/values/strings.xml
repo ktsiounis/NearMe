@@ -33,9 +33,13 @@
     <string name="search_button_description">Press it to search for places</string>
     <string name="place_photo_description">Photo of the place</string>
     <string name="no_places">There are no places with this type near to you</string>
+    <string name="place_icon_description">Place\'s icon</string>
 
     <string name="logout">Logout</string>
     <string name="search_hint">What are you looking for?</string>
     <string name="title_place_list">Places</string>
     <string name="title_place_detail">Place Detail</string>
+    <string name="title_review_textview">Review stats</string>
+    <string name="title_placephoto_textview">Place\'s photos</string>
+    <string name="title_generalinfo_textview">General Information</string>
 </resources>

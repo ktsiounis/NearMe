@@ -9,6 +9,9 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +25,7 @@ import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
 import com.ktsiounis.example.nearme.model.Category;
 import com.ktsiounis.example.nearme.model.Place;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +40,12 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
 
     @BindView(R.id.fab) public FloatingActionButton fab;
     @BindView(R.id.details_toolbar) public Toolbar toolbar;
+    @BindView(R.id.ratingBar) public RatingBar ratingBar;
+    @BindView(R.id.placeIcon) public ImageView placeIcon;
+    @BindView(R.id.placePhoto) public ImageView placePhoto;
+    @BindView(R.id.placeAddress) public TextView placeAddress;
+    @BindView(R.id.placeName) public TextView placeName;
+    @BindView(R.id.ratingNum) public TextView ratingNum;
 
     private Place place;
     private GoogleMap mMap;
@@ -81,6 +91,18 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        ratingBar.setRating(Float.valueOf(place.getRating()));
+        ratingNum.setText(place.getRating());
+        placeAddress.setText(place.getVicinity());
+        placeName.setText(place.getName());
+        Picasso.with(this)
+                .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
+                            place.getPlacePhotos().get(0).getPhoto_reference() + "&key=" + getResources().getString(R.string.API_KEY))
+                .into(placePhoto);
+        Picasso.with(this)
+                .load(place.getIcon())
+                .into(placeIcon);
 
     }
 

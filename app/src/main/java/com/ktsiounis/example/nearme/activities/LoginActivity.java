@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ktsiounis.example.nearme.R;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("logged", MODE_PRIVATE);
 

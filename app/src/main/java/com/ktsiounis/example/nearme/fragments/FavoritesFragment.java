@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ktsiounis.example.nearme.R;
@@ -42,11 +43,11 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
 
     private ArrayList<Place> places = new ArrayList<>();
     private PlaceListRecyclerViewAdapter recyclerViewAdapter;
+    private boolean mTwoPane;
 
     public FavoritesFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,17 +61,35 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
         recyclerViewAdapter = new PlaceListRecyclerViewAdapter(this, places);
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        if (getActivity().findViewById(R.id.place_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+
         // Inflate the layout for this fragment
         return view;
     }
 
     @Override
     public void onItemClickListener(int position) {
-        Bundle arguments = new Bundle();
-        arguments.putParcelable("place", places.get(position));
-        Intent intent = new Intent(getActivity(), PlaceDetailActivity.class);
-        intent.putExtra("args", arguments);
-        startActivity(intent);
+        if (mTwoPane) {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("place", places.get(position));
+            PlaceDetailFragment fragment = new PlaceDetailFragment();
+            fragment.setArguments(arguments);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.place_detail_container, fragment)
+                    .commit();
+        } else {
+            Bundle arguments = new Bundle();
+            arguments.putParcelable("place", places.get(position));
+            Intent intent = new Intent(getActivity(), PlaceDetailActivity.class);
+            intent.putExtra("args", arguments);
+            startActivity(intent);
+        }
     }
 
     @SuppressLint("StaticFieldLeak")

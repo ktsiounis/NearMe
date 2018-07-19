@@ -50,8 +50,6 @@ public class PlaceListRecyclerViewAdapter
         holder.place_name.setText(mValues.get(position).getName());
         holder.place_vicinity.setText(mValues.get(position).getVicinity());
         if(!mValues.get(position).getPlacePhotos().isEmpty()){
-            Log.d("PlaceListRVAdapter", "onBindViewHolder: " + "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
-                    mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY));
             Picasso.with(context)
                     .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
                     mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY))

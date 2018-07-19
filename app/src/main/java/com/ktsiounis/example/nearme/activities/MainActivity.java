@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = getSupportActionBar();
         categoryArrayList = new ArrayList<>();
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("logged", MODE_PRIVATE);
 
