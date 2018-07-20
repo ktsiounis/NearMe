@@ -41,8 +41,8 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
     @BindView(R.id.place_list)
     public RecyclerView recyclerView;
 
-    private ArrayList<Place> places = new ArrayList<>();
-    private PlaceListRecyclerViewAdapter recyclerViewAdapter;
+    private static ArrayList<Place> places = new ArrayList<>();
+    private static PlaceListRecyclerViewAdapter recyclerViewAdapter;
     private boolean mTwoPane;
 
     public FavoritesFragment() {
@@ -93,7 +93,7 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
     }
 
     @SuppressLint("StaticFieldLeak")
-    public class FavoritesTask extends AsyncTask<Integer, Integer, Void> {
+    public static class FavoritesTask extends AsyncTask<Integer, Integer, Void> {
 
         @Override
         protected Void doInBackground(Integer... integers) {
