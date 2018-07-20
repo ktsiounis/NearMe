@@ -66,6 +66,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/favorites_widget_info" />
         </receiver>
+
     </application>
 
 </manifest>

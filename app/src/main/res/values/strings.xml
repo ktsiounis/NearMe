@@ -34,6 +34,7 @@
     <string name="place_photo_description">Photo of the place</string>
     <string name="no_places">There are no places with this type near to you</string>
     <string name="place_icon_description">Place\'s icon</string>
+    <string name="fav_widget_image">Place\'s thumbnail</string>
 
     <string name="logout">Logout</string>
     <string name="search_hint">What are you looking for?</string>
@@ -44,4 +45,5 @@
     <string name="title_generalinfo_textview">General Information</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="configure">Configure</string>
 </resources>

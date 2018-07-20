@@ -19,7 +19,8 @@
         android:textStyle="bold|italic" />
 
     <ListView
+        android:id="@+id/favorites_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
