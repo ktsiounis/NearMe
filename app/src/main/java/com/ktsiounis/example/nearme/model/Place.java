@@ -28,6 +28,7 @@ public class Place implements Parcelable {
     private String vicinity;
     @SerializedName("photos")
     private ArrayList<PlacePhoto> placePhotos;
+    private Boolean checked = false;
 
     public Place() {}
 
@@ -47,6 +48,7 @@ public class Place implements Parcelable {
         this.rating = rating;
         this.vicinity = vicinity;
         this.placePhotos = placePhotos;
+        this.checked = false;
     }
 
     protected Place(Parcel in) {
@@ -140,6 +142,14 @@ public class Place implements Parcelable {
 
     public void setPlacePhotos(ArrayList<PlacePhoto> placePhotos) {
         this.placePhotos = placePhotos;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
     @Override

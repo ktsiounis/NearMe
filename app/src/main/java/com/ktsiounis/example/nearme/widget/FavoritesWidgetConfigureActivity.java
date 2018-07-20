@@ -1,27 +1,50 @@
 package com.ktsiounis.example.nearme.widget;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ktsiounis.example.nearme.R;
+import com.ktsiounis.example.nearme.adapters.FavoritesWidgetAdapter;
+import com.ktsiounis.example.nearme.model.Place;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * The configuration screen for the {@link FavoritesWidget FavoritesWidget} AppWidget.
  */
-public class FavoritesWidgetConfigureActivity extends Activity {
+public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "com.ktsiounis.example.nearme.NewAppWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+
+    private static ArrayList<Place> places = new ArrayList<>();
+    private static FavoritesWidgetAdapter adapter;
+
     EditText mAppWidgetText;
+    @BindView(R.id.place_list) RecyclerView place_list;
 
     public FavoritesWidgetConfigureActivity() {
         super();
@@ -63,12 +86,19 @@ public class FavoritesWidgetConfigureActivity extends Activity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        setContentView(R.layout.favorites_widget_configure);
+
+        ButterKnife.bind(this);
+
+        new FavoritesWidgetTask().execute();
+
+        adapter = new FavoritesWidgetAdapter(places);
+        place_list.setAdapter(adapter);
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
 
-        setContentView(R.layout.favorites_widget_configure);
         mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
         //findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
 
@@ -124,5 +154,40 @@ public class FavoritesWidgetConfigureActivity extends Activity {
         setResult(RESULT_OK, resultValue);
         finish();
     }
+
+    @SuppressLint("StaticFieldLeak")
+    public static class FavoritesWidgetTask extends AsyncTask<Integer, Integer, Void> {
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot favoriteSnapshot: dataSnapshot.getChildren()){
+                        Place place = favoriteSnapshot.getValue(Place.class);
+                        places.add(place);
+                        Log.d("FavoritesTask", "onDataChange: " + place.getName());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+
+            FirebaseDatabase.getInstance().getReference()
+                    .child("users")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child("favorites")
+                    .addValueEventListener(postListener);
+
+            return null;
+        }
+
+    }
+
 }
 
