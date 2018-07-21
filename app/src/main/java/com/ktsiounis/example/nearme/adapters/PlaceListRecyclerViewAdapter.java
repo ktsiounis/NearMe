@@ -49,11 +49,13 @@ public class PlaceListRecyclerViewAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.place_name.setText(mValues.get(position).getName());
         holder.place_vicinity.setText(mValues.get(position).getVicinity());
-        if(!mValues.get(position).getPlacePhotos().isEmpty()){
-            Picasso.with(context)
-                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
-                    mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY))
-                    .into(holder.place_photo);
+        if(mValues.get(position).getPlacePhotos() != null){
+            if(!mValues.get(position).getPlacePhotos().isEmpty()){
+                Picasso.with(context)
+                        .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&maxheight=400&photoreference=" +
+                                mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY))
+                        .into(holder.place_photo);
+            }
         }
     }
 

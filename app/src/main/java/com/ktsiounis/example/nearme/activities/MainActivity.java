@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
@@ -97,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "You need to log in first", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         sp = getSharedPreferences("logged", MODE_PRIVATE);
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -87,6 +88,12 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
         setContentView(R.layout.favorites_widget_configure);
 
         ButterKnife.bind(this);
+
+        if(FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "You need to log in first", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         new FavoritesWidgetTask().execute();
 

@@ -101,6 +101,7 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
             ValueEventListener postListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    places.clear();
                     for (DataSnapshot favoriteSnapshot: dataSnapshot.getChildren()){
                         Place place = favoriteSnapshot.getValue(Place.class);
                         places.add(place);
