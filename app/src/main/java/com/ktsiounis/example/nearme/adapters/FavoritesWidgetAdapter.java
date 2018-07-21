@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.model.Place;
 import com.ktsiounis.example.nearme.widget.FavoritesWidget;
+import com.ktsiounis.example.nearme.widget.FavoritesWidgetConfigureActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -75,9 +76,6 @@ public class FavoritesWidgetAdapter extends RecyclerView.Adapter<FavoritesWidget
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            //mOnClickListener.onItemClickListener(position);
-
-            Log.d("Favorites", "onClick: " + mValues.get(position).getChecked());
 
             if(mValues.get(position).getChecked()){
                 mValues.get(position).setChecked(false);

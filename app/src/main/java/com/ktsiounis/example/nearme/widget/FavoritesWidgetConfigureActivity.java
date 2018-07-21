@@ -1,7 +1,6 @@
 package com.ktsiounis.example.nearme.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,8 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,12 +35,12 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "com.ktsiounis.example.nearme.NewAppWidget";
     private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final String PREF_PREFIX_TITLE_KEY = "appwidget_title_";
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
-    private static ArrayList<Place> places = new ArrayList<>();
+    public static ArrayList<Place> places = new ArrayList<>();
     private static FavoritesWidgetAdapter adapter;
 
-    EditText mAppWidgetText;
     @BindView(R.id.place_list) RecyclerView place_list;
 
     public FavoritesWidgetConfigureActivity() {
@@ -54,6 +51,7 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
     static void saveTitlePref(Context context, int appWidgetId, String text) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
+        prefs.putString(PREF_PREFIX_TITLE_KEY + appWidgetId, "Favorites");
         prefs.apply();
     }
 
@@ -64,7 +62,7 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
         Bundle values = new Bundle();
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null);
+        String titleValue = prefs.getString(PREF_PREFIX_TITLE_KEY + appWidgetId, null);
         String textValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null);
         values.putString("title", titleValue);
         values.putString("text", textValue);
@@ -99,9 +97,6 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
         // out of the widget placement if the user presses the back button.
         setResult(RESULT_CANCELED);
 
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
-        //findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
-
         // Find the widget id from the intent.
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -113,7 +108,6 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
         // If this activity was started with an intent without an app widget ID, finish with an error.
         if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
-            return;
         }
 
     }
@@ -138,11 +132,19 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
     }
 
     public void saveItems() {
+
+        StringBuilder favoriteslist = new StringBuilder();
+
+        for (int i=0; i<places.size(); i++){
+            if (places.get(i).getChecked()){
+                favoriteslist.append("\n").append(places.get(i).getName());
+            }
+        }
+
         final Context context = FavoritesWidgetConfigureActivity.this;
 
         // When the button is clicked, store the string locally
-        String widgetText = mAppWidgetText.getText().toString();
-        saveTitlePref(context, mAppWidgetId, widgetText);
+        saveTitlePref(context, mAppWidgetId, favoriteslist.toString());
 
         // It is the responsibility of the configuration activity to update the app widget
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -153,6 +155,7 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
         resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, resultValue);
         finish();
+
     }
 
     @SuppressLint("StaticFieldLeak")

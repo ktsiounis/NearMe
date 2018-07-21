@@ -44,7 +44,9 @@
     <string name="title_placephoto_textview">Place\'s photos</string>
     <string name="title_generalinfo_textview">General Information</string>
     <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_title">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="configure">Configure</string>
     <string name="menu_done">Done</string>
+    <string name="widget_configure_prompt_message">Select places to keep them in your widget:</string>
 </resources>
