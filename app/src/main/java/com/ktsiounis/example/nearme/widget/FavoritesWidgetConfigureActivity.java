@@ -95,7 +95,12 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
             return;
         }
 
-        new FavoritesWidgetTask().execute();
+        if(icicle != null) {
+            places = icicle.getParcelableArrayList("favorites");
+            Log.d("Widget", "onCreate: Places fetched from state");
+        } else {
+            new FavoritesWidgetTask().execute();
+        }
 
         adapter = new FavoritesWidgetAdapter(places);
         place_list.setAdapter(adapter);
@@ -199,5 +204,11 @@ public class FavoritesWidgetConfigureActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("favorites", places);
+    }
 }
 

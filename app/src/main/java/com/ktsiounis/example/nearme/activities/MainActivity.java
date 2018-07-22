@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private SharedPreferences sp;
-    public ArrayList<Category> categoryArrayList;
-    private Bundle args;
+    public ArrayList<Category> categoryArrayList = new ArrayList<>();
+    private Bundle args = new Bundle();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -95,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = getSupportActionBar();
         categoryArrayList = new ArrayList<>();
 
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() == null) {
             Toast.makeText(this, "You need to log in first", Toast.LENGTH_LONG).show();
@@ -106,8 +106,16 @@ public class MainActivity extends AppCompatActivity {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        toolbar.setTitle(R.string.title_home);
-        new CategoriesAsyncTask().execute();
+        if(savedInstanceState != null){
+            progressBar.setVisibility(View.INVISIBLE);
+            categoryArrayList.clear();
+            categoryArrayList = savedInstanceState.getParcelableArrayList("categories");
+            Log.d("MainActivity", "onCreate: " + categoryArrayList.get(0).getTitle());
+            navigation.setSelectedItemId(savedInstanceState.getInt("navigationState"));
+        } else {
+            toolbar.setTitle(R.string.title_home);
+            new CategoriesAsyncTask().execute();
+        }
 
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // An example device ID
@@ -189,4 +197,12 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("categories", categoryArrayList);
+        outState.putInt("navigationState", navigation.getSelectedItemId());
+
+    }
 }

@@ -49,6 +49,9 @@ public class FavoritesWidgetAdapter extends RecyclerView.Adapter<FavoritesWidget
                             mValues.get(position).getPlacePhotos().get(0).getPhoto_reference() + "&key=" + context.getResources().getString(R.string.API_KEY))
                     .into(holder.place_photo);
         }
+        if(mValues.get(position).getChecked()){
+            holder.itemView.setBackgroundColor(context.getResources().getColor(android.R.color.holo_green_light));
+        }
     }
 
     @Override

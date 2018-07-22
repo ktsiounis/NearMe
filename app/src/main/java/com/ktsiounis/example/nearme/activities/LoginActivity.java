@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("logged", MODE_PRIVATE);
 

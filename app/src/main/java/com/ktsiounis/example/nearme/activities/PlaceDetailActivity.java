@@ -9,12 +9,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,8 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ktsiounis.example.nearme.R;
-import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
-import com.ktsiounis.example.nearme.model.Category;
 import com.ktsiounis.example.nearme.model.Place;
 import com.squareup.picasso.Picasso;
 
@@ -64,7 +60,11 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
 
         ButterKnife.bind(this);
 
-        place = getIntent().getExtras().getBundle("args").getParcelable("place");
+        if(savedInstanceState != null){
+            place = savedInstanceState.getParcelable("placeState");
+        } else {
+            place = getIntent().getExtras().getBundle("args").getParcelable("place");
+        }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,18 +111,6 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(place.getName());
-
-//        if (savedInstanceState == null) {
-//            // Create the detail fragment and add it to the activity
-//            // using a fragment transaction.
-//            Bundle arguments = new Bundle();
-//            arguments.putParcelable("place", place);
-//            PlaceDetailFragment fragment = new PlaceDetailFragment();
-//            fragment.setArguments(arguments);
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.place_detail_container, fragment)
-//                    .commit();
-//        }
 
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -196,4 +184,10 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable("place", place);
+    }
 }

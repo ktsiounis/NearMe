@@ -56,7 +56,12 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
 
         ButterKnife.bind(this, view);
 
-        new FavoritesTask().execute();
+        if(savedInstanceState != null) {
+            places = savedInstanceState.getParcelableArrayList("placesState");
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("rvState"));
+        } else {
+            new FavoritesTask().execute();
+        }
 
         recyclerViewAdapter = new PlaceListRecyclerViewAdapter(this, places);
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -71,6 +76,14 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("placesState", places);
+        outState.putParcelable("rvState", recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     @Override

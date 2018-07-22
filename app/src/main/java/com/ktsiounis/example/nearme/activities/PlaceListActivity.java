@@ -53,8 +53,14 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
 
         ButterKnife.bind(this);
 
-        places = getIntent().getParcelableArrayListExtra("places");
-        category = getIntent().getStringExtra("category");
+        if(savedInstanceState != null){
+            places = savedInstanceState.getParcelableArrayList("placesState");
+            category = savedInstanceState.getString("categoryState");
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("rvState"));
+        } else {
+            places = getIntent().getParcelableArrayListExtra("places");
+            category = getIntent().getStringExtra("category");
+        }
 
         if(places.isEmpty()) {
             noPlacesTV.setVisibility(View.VISIBLE);
@@ -100,5 +106,14 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
             intent.putExtra("args", arguments);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("placesState", places);
+        outState.putString("categoryState", category);
+        outState.putParcelable("LIST_STATE", recyclerView.getLayoutManager().onSaveInstanceState());
     }
 }

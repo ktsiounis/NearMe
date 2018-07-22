@@ -162,7 +162,10 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
             @Override
             public void onResponse(Call<PlacesResults> call, Response<PlacesResults> response) {
                 progressBar.setVisibility(View.INVISIBLE);
-                ArrayList<Place> places = response.body().getPlaces();
+                ArrayList<Place> places = new ArrayList<>();
+                if (response.body() != null) {
+                    places = response.body().getPlaces();
+                }
                 Intent i = new Intent(getActivity(), PlaceListActivity.class);
                 i.putParcelableArrayListExtra("places", places);
                 i.putExtra("category", categoryArrayList.get(position).getTitle());
@@ -196,7 +199,10 @@ public class HomeFragment extends Fragment implements CategoriesAdapter.ItemClic
             @Override
             public void onResponse(@NonNull Call<PlacesResults> call, @NonNull Response<PlacesResults> response) {
                 progressBar.setVisibility(View.INVISIBLE);
-                ArrayList<Place> places = response.body().getPlaces();
+                ArrayList<Place> places = null;
+                if (response.body() != null) {
+                    places = response.body().getPlaces();
+                }
                 Intent i = new Intent(getActivity(), PlaceListActivity.class);
                 i.putParcelableArrayListExtra("places", places);
                 i.putExtra("category", "Text Search");

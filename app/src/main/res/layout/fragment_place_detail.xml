@@ -171,8 +171,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
-        <!--TODO: Implement the other elements for details -->
-
     </android.support.constraint.ConstraintLayout>
 
 </android.support.design.widget.CoordinatorLayout>
