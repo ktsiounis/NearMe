@@ -3,9 +3,12 @@ package com.ktsiounis.example.nearme.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +24,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -57,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     public ProgressBar progressBar;
     @BindView(R.id.adView)
     public AdView adView;
+    @BindView(R.id.offlineMessage)
+    public TextView offlineMessage;
+    @BindView(R.id.tryAgainBtn)
+    public Button tryAgainBtn;
 
     private FirebaseAuth mAuth;
     private SharedPreferences sp;
@@ -106,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        offlineMessage.setVisibility(View.INVISIBLE);
+        tryAgainBtn.setVisibility(View.INVISIBLE);
+
         if(savedInstanceState != null){
             progressBar.setVisibility(View.INVISIBLE);
             categoryArrayList.clear();
@@ -114,8 +126,33 @@ public class MainActivity extends AppCompatActivity {
             navigation.setSelectedItemId(savedInstanceState.getInt("navigationState"));
         } else {
             toolbar.setTitle(R.string.title_home);
-            new CategoriesAsyncTask().execute();
+            if(isOnline()){
+                progressBar.setVisibility(View.VISIBLE);
+                offlineMessage.setVisibility(View.INVISIBLE);
+                tryAgainBtn.setVisibility(View.INVISIBLE);
+                new CategoriesAsyncTask().execute();
+            }else {
+                progressBar.setVisibility(View.INVISIBLE);
+                offlineMessage.setVisibility(View.VISIBLE);
+                tryAgainBtn.setVisibility(View.VISIBLE);
+            }
         }
+
+        tryAgainBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isOnline()){
+                    progressBar.setVisibility(View.VISIBLE);
+                    offlineMessage.setVisibility(View.INVISIBLE);
+                    tryAgainBtn.setVisibility(View.INVISIBLE);
+                    new CategoriesAsyncTask().execute();
+                }else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    offlineMessage.setVisibility(View.VISIBLE);
+                    tryAgainBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         AdRequest request = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // An example device ID
@@ -141,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Object doInBackground(Object[] objects) {
-
-            progressBar.setVisibility(View.VISIBLE);
 
             try {
                 fetchCategories();
@@ -204,5 +239,12 @@ public class MainActivity extends AppCompatActivity {
         outState.putParcelableArrayList("categories", categoryArrayList);
         outState.putInt("navigationState", navigation.getSelectedItemId());
 
+    }
+
+    public boolean isOnline(){
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 }

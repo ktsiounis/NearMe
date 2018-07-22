@@ -49,4 +49,6 @@
     <string name="configure">Configure</string>
     <string name="menu_done">Done</string>
     <string name="widget_configure_prompt_message">Select places to keep them in your widget:</string>
+    <string name="offlineMessage">Connect to internet and try again.</string>
+    <string name="tryAgainBtn">Try Again</string>
 </resources>
