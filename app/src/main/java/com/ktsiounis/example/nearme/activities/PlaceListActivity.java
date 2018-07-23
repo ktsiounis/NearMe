@@ -53,16 +53,20 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
 
         ButterKnife.bind(this);
 
+        places = new ArrayList<>();
+
         if(savedInstanceState != null){
             places = savedInstanceState.getParcelableArrayList("placesState");
             category = savedInstanceState.getString("categoryState");
             recyclerView.getLayoutManager().onRestoreInstanceState(savedInstanceState.getParcelable("rvState"));
         } else {
-            places = getIntent().getParcelableArrayListExtra("places");
+            if(getIntent().hasExtra("places")){
+                places = getIntent().getParcelableArrayListExtra("places");
+            }
             category = getIntent().getStringExtra("category");
         }
 
-        if(places.isEmpty()) {
+        if(places.isEmpty() || places == null) {
             noPlacesTV.setVisibility(View.VISIBLE);
         } else {
             noPlacesTV.setVisibility(View.INVISIBLE);

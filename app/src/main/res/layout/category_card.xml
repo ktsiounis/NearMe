@@ -41,7 +41,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/category_title_description"
-                android:text="adsddasdsas"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
                 android:textStyle="normal"
