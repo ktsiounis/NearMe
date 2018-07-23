@@ -88,6 +88,11 @@ public class FavoritesFragment extends Fragment implements PlaceListRecyclerView
 
     @Override
     public void onItemClickListener(int position) {
+
+        if(places.size() == 0) {
+            return;
+        }
+
         if (mTwoPane) {
             Bundle arguments = new Bundle();
             arguments.putParcelable("place", places.get(position));
