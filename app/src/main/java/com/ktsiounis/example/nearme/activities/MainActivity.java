@@ -1,21 +1,15 @@
 package com.ktsiounis.example.nearme.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -31,10 +25,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.fragments.FavoritesFragment;
 import com.ktsiounis.example.nearme.fragments.HomeFragment;
@@ -49,12 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.READ_CONTACTS;
-
 public class MainActivity extends AppCompatActivity {
-
-    public static final int REQUEST_LOCATION = 0;
 
     @BindView(R.id.navigation) BottomNavigationView navigation;
     public ActionBar toolbar;
@@ -105,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = getSupportActionBar();
         categoryArrayList = new ArrayList<>();
 
+        MobileAds.initialize(this, getString(R.string.AdMobAppID));
+
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser() == null) {
             Toast.makeText(this, "You need to log in first", Toast.LENGTH_LONG).show();
@@ -154,10 +143,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)  // An example device ID
-                .build();
-
+        AdRequest request = new AdRequest.Builder().build();
         adView.loadAd(request);
 
     }
