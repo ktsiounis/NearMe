@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.ktsiounis.example.nearme.R;
 import com.ktsiounis.example.nearme.adapters.PlaceListRecyclerViewAdapter;
 import com.ktsiounis.example.nearme.fragments.PlaceDetailFragment;
@@ -45,6 +47,8 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     public TextView noPlacesTV;
     @BindView(R.id.place_list)
     public RecyclerView recyclerView;
+    @BindView(R.id.adView)
+    public AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,9 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
 
         assert recyclerView != null;
         setupRecyclerView(recyclerView);
+
+        AdRequest request = new AdRequest.Builder().build();
+        adView.loadAd(request);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

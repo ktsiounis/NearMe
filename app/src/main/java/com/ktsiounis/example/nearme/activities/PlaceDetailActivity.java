@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -48,6 +50,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
     @BindView(R.id.placeAddress) public TextView placeAddress;
     @BindView(R.id.placeName) public TextView placeName;
     @BindView(R.id.ratingNum) public TextView ratingNum;
+    @BindView(R.id.adView) public AdView adView;
 
     private Place place;
     private GoogleMap mMap;
@@ -151,6 +154,9 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
 
                     }
                 });
+
+        AdRequest request = new AdRequest.Builder().build();
+        adView.loadAd(request);
 
     }
 
