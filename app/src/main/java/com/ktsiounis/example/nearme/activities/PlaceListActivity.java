@@ -47,7 +47,7 @@ public class PlaceListActivity extends AppCompatActivity implements PlaceListRec
     public TextView noPlacesTV;
     @BindView(R.id.place_list)
     public RecyclerView recyclerView;
-    @BindView(R.id.adView)
+    @BindView(R.id.listAdView)
     public AdView adView;
 
     @Override

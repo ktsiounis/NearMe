@@ -50,7 +50,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
     @BindView(R.id.placeAddress) public TextView placeAddress;
     @BindView(R.id.placeName) public TextView placeName;
     @BindView(R.id.ratingNum) public TextView ratingNum;
-    @BindView(R.id.adView) public AdView adView;
+    @BindView(R.id.detailsAdView) public AdView adView;
 
     private Place place;
     private GoogleMap mMap;
