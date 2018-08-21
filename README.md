@@ -48,5 +48,5 @@ When the user creates a widget on his home screen, he needs to choose what favor
 The widget looks like this:
 ![Widget](/screenshots/widget.png)
 
-##License
+## License
 See the ![LICENCSE](/LICENSE.md) file for license rights and limitations (MIT).
