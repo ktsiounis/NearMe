@@ -49,4 +49,4 @@ The widget looks like this:
 ![Widget](/screenshots/widget.png)
 
 ## License
-See the ![LICENCSE](/LICENSE.md) file for license rights and limitations (MIT).
+See the [LICENCSE](/LICENSE.md) file for license rights and limitations (MIT).
