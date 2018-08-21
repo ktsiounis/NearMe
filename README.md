@@ -1,5 +1,5 @@
 # Near Me
-  Near Me is my Capstone project for Udacity Android Developer Nanodegree. This app is suitable to travelers 
+  Near Me is my Capstone project for Udacity Android Developer Nanodegree. This app is suitable to travelers
 who want to explore new places around their current location. The user can search for places via some categories or
 via text. The user can also save his favorite places so as to find them faster and he can keep in them on his home screen via app's widget.
 ## Features
@@ -47,3 +47,6 @@ When the user creates a widget on his home screen, he needs to choose what favor
 ![Widget Configuration](/screenshots/widget_configuration_screen.png)
 The widget looks like this:
 ![Widget](/screenshots/widget.png)
+
+##License
+See the ![LICENCSE](/LICENSE.md) file for license rights and limitations (MIT).
